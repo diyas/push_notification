@@ -1,7 +1,9 @@
 package com.push.app.utility;
 
 import com.google.gson.Gson;
-import org.springframework.security.core.Authentication;
+import com.push.app.model.payload.Response;
+import org.springframework.http.*;
+import org.springframework.security.core.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class Utility {
@@ -21,5 +23,14 @@ public class Utility {
         Authentication authentication = SecurityContextHolder.getContext()
                 .getAuthentication();
         return authentication.getName();
+    }
+
+    public static ResponseEntity setResponse(String message, Object data) {
+        Response resp = new Response();
+        resp.setCode(HttpStatus.OK.value());
+        resp.setStatus(HttpStatus.OK.getReasonPhrase());
+        resp.setMessage(message);
+        resp.setData(data);
+        return new ResponseEntity<Response>(resp, HttpStatus.OK);
     }
 }
