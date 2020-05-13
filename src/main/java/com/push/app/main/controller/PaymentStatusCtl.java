@@ -1,6 +1,7 @@
 package com.push.app.main.controller;
 
 import com.push.app.config.MessageType;
+import com.push.app.config.MqttConfig;
 import com.push.app.model.TrStatus;
 import com.push.app.model.domain.Transaction;
 import com.push.app.model.payload.Payload;
@@ -32,7 +33,7 @@ public class PaymentStatusCtl {
     public ResponseEntity<String> actionMessage(@RequestBody Payload payload) {
         String TOPIC = payload.getParam().getTopic() + payload.getSerialNumber();
         try {
-            mqttService.connect(false);
+            //mqttService.connect(false);
             if (payload.getMessageType().equals(MessageType.PUBLISH)) {
                 mqttService.publish(TOPIC, payload.getParam().getMessage());
                 return new ResponseEntity<String>("message has been published", HttpStatus.OK);
@@ -54,26 +55,29 @@ public class PaymentStatusCtl {
     }
 
     @PostMapping(value = "/v1/payment/publish")
+    @ResponseBody
     public ResponseEntity<String> publishPayment(@RequestBody RequestPayment request) throws MqttException {
         Transaction tr = new Transaction();
         tr.setTrNo(request.getTrNo());
         tr.setTrAmount(request.getTrAmount());
         tr.setTrMethod(request.getTrMethod());
-        tr.setTrTopicEdc("/topicEdc/" + Utility.getUser());
-        tr.setTrTopicPos("/topicPos/" + Utility.getUser());
+        tr.setTrTopicEdc("/Payment/Status/" + Utility.getUser());
+        tr.setTrTopicPos("/Payment/" + Utility.getUser());
         tr.setTrStatus(TrStatus.PENDING);
-        boolean isConnected = mqttService.connect(false);
+//        boolean isConnected = mqttService.connect(false);
+
         Transaction trResult = null;
-        if (isConnected)
+        if (MqttConfig.isConnected)
             trResult = trRepo.save(tr);
         if (trResult != null) {
-            mqttService.publish(tr.getTrTopicEdc(), Utility.objectToString(tr));
+            mqttService.publish(tr.getTrTopicPos(), Utility.objectToString(tr));
             //mqttService.subscribe(tr.getTrTopicPos());
         }
         return Utility.setResponse("payment has been published", tr);
     }
 
     @PutMapping(value = "/v1/payment/publish/status")
+    @ResponseBody
     public ResponseEntity<String> publishPaymentStatus(@RequestBody RequestPaymentStatus request) throws MqttException {
         Transaction tr = trRepo.findByTrNoAndTrStatus(request.getTrNo(), TrStatus.PENDING);
         if (tr == null)
@@ -81,8 +85,9 @@ public class PaymentStatusCtl {
         tr.setTrStatus(TrStatus.COMPLETED);
         trRepo.save(tr);
         if (tr.getId() != 0) {
-            mqttService.connect(false);
-            mqttService.publish(tr.getTrTopicPos(), Utility.objectToString(tr));
+            if (!MqttConfig.isConnected)
+                mqttService.connect(false);
+            mqttService.publish(tr.getTrTopicEdc(), Utility.objectToString(tr));
         }
         return Utility.setResponse("payment has been success", tr);
     }

@@ -1,0 +1,44 @@
+spring:
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:32778/oauth?autoReconnect=true
+    username: root
+    password: root
+    #    initialization-mode: always
+    #    data: /data.sql
+    poolName: SpringBootHikariCP
+    maximumPoolSize: 5
+    minimumIdle: 3
+    maxLifetime: 2000000
+    connectionTimeout: 30000
+    idleTimeout: 30000
+  redis:
+    host: localhost
+    port: 32775
+    maxTotal: 128
+    maxIdle: 128
+    minIdle: 16
+    minEvictableIdleTimeMillis: 60
+    timeBetweenEvictionRunsMillis: 30
+    blockWhenExhausted: true
+    usePool: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    #  flyway:
+    #    url: jdbc:mysql://localhost:32769/mysql
+    #    schemas: oauth
+    #    user: root
+    #    password: root
+  security:
+    oauth2:
+      resource:
+        filter-order: 3
+oauth2:
+  url: http://localhost:8080/oauth/token
+  clientId: tester
+  clientSecret: tester
+  tokenExpired: 480
+  refreshToken: 480

@@ -35,8 +35,9 @@ public class MqttService implements IMqttService {
     @Override
     public boolean connect(boolean isSsl) throws MqttException {
         String clientId = MqttClient.generateClientId();
-        mqttClient = new MqttClient(isSsl ? "ssl://" : "tcp://" + prop.getHostname() + ":" + prop.getPort(), clientId);
-        if (isSsl) {
+        //mqttClient = new MqttClient(prop.isSsl() ? "ssl://" : "tcp://" + prop.getHostname() + ":" + prop.getPort(), clientId);
+        mqttClient = new MqttClient("tcp://mqtt.eclipse.org", clientId);
+        if (prop.isSsl()) {
             SocketFactory.SocketFactoryOptions socketFactoryOptions = new SocketFactory.SocketFactoryOptions();
             try {
                 String fileName = "raw/ca.crt";
@@ -76,7 +77,5 @@ public class MqttService implements IMqttService {
     @Override
     public void disconnect() throws MqttException {
         mqttClient.disconnect();
-
     }
-
 }

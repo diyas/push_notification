@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 public class MqttProperties {
     private boolean automaticReconnect;
     private boolean cleanSession;
+    private boolean isSsl;
     private int connectionTimeout;
     private String clientId;
     private String hostname;

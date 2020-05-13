@@ -6,6 +6,7 @@ import javax.persistence.Column;
 
 @Data
 public class RequestPayment {
+    private String posId;
     private String trNo;
     private String trMethod;
     private Long trAmount;

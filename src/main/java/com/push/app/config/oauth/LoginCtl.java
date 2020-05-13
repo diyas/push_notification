@@ -1,15 +1,14 @@
 package com.push.app.config.oauth;
 
 import com.push.app.model.payload.Response;
+import com.push.app.service.MqttService;
 import com.push.app.utility.ErrorHandler;
 import com.push.app.utility.Utility;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,6 +20,9 @@ public class LoginCtl {
 
     @Autowired
     private Oauth2Properties oauth2Properties;
+
+    @Autowired
+    private MqttService mqttService;
 
     @PostMapping("/login")
     public ResponseEntity<Response> getToken(@RequestBody Login request) {
@@ -42,8 +44,10 @@ public class LoginCtl {
         return Utility.setResponse("", response.getBody());
     }
 
-    public void refreshToken() {
-
+    @PostMapping(value = "/publish_token")
+    public ResponseEntity<Response> publishToken(@RequestBody ResponseToken responseToken) throws MqttException {
+        if (responseToken != null)
+            mqttService.publish("/Pairing/POS01", responseToken.getAccess_token());
+        return Utility.setResponse("Token Published.", null);
     }
-
 }

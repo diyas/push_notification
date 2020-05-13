@@ -2,11 +2,14 @@ package com.push.app.config.oauth;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Data
-@Component
+@Configuration
 @ConfigurationProperties("oauth2")
+@Order(0)
 public class Oauth2Properties {
     private String tokenUrl;
     private String checkTokenUrl;
