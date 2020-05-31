@@ -2,7 +2,6 @@ package com.push.app.model.domain;
 
 import com.push.app.model.TrStatus;
 import lombok.Data;
-import lombok.Value;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -11,8 +10,8 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "transaction")
-public class Transaction {
+@Table(name = "transaction_history")
+public class TransactionHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -21,7 +20,7 @@ public class Transaction {
     @Column
     private String invoiceNo;
     @Column
-    private int trMethod;
+    private String trMethod;
     @Column
     private Long trAmount;
     @Column

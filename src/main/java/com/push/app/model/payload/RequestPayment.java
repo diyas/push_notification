@@ -8,6 +8,6 @@ import javax.persistence.Column;
 public class RequestPayment {
     private String posId;
     private String trNo;
-    private String trMethod;
+    private int trMethod;
     private Long trAmount;
 }

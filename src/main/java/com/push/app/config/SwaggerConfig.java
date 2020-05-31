@@ -96,7 +96,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder().title("Push Notification API").description("")
                 .termsOfServiceUrl("http://localhost:8080/api")
-                .contact(new Contact("Diyas", "http://www.test.com", "diyas@test.com"))
-                .license("Open Source").licenseUrl("https://www.test.com").version("1.0.0").build();
+                .contact(new Contact("First Payment Indonesia", "https://www.swipepay.co.id/", "sales@firstpayment.co.id"))
+                .license("Open Source").version("1.0.0").build();
     }
 }

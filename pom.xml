@@ -121,6 +121,7 @@
     </repositories>
 
     <build>
+        <finalName>pushnotification</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -129,9 +130,6 @@
                     <jvmArguments>
                         -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5006
                     </jvmArguments>
-                    <arguments>
-                        <argument>--spring.profiles.active=dev</argument>
-                    </arguments>
                 </configuration>
             </plugin>
         </plugins>

@@ -1,5 +1,8 @@
-package com.push.app.config.oauth;
+package com.push.app.main.controller;
 
+import com.push.app.config.oauth.Login;
+import com.push.app.config.oauth.Oauth2Properties;
+import com.push.app.config.oauth.ResponseToken;
 import com.push.app.model.payload.Response;
 import com.push.app.service.MqttService;
 import com.push.app.utility.ErrorHandler;
@@ -11,6 +14,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Arrays;
 
@@ -45,9 +49,17 @@ public class LoginCtl {
     }
 
     @PostMapping(value = "/publish_token")
+    @ApiIgnore
     public ResponseEntity<Response> publishToken(@RequestBody ResponseToken responseToken) throws MqttException {
         if (responseToken != null)
             mqttService.publish("/Pairing/POS01", responseToken.getAccess_token());
         return Utility.setResponse("Token Published.", null);
+    }
+
+    @GetMapping(value = "/connect")
+    @ApiIgnore
+    public ResponseEntity<Boolean> connectMqtt() throws MqttException {
+        mqttService.connect();
+        return new ResponseEntity<Boolean>(mqttService.isConnected(), HttpStatus.OK);
     }
 }
