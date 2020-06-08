@@ -19,8 +19,6 @@ oauth2:
   authorizeTokenUrl: http://localhost:61055/oauth2/oauth/authorize
   clientId: tester
   clientSecret: tester
-  tokenExpired: 60
-  refreshToken: 345
 mqtt:
   automaticReconnect: true
   cleanSession: true

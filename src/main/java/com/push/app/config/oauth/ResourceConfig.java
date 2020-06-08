@@ -1,5 +1,6 @@
 package com.push.app.config.oauth;
 
+import com.push.app.utility.AuthExceptionEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -43,6 +44,7 @@ public class ResourceConfig {
             tokenService.setClientSecret(properties.getClientSecret());
             tokenService.setCheckTokenEndpointUrl(properties.getCheckTokenUrl());
             resources.resourceId(RESOURCE_ID).tokenServices(tokenService);
+            resources.authenticationEntryPoint(new AuthExceptionEntryPoint());
         }
 
         @Override

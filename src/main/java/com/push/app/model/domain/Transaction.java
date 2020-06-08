@@ -23,7 +23,7 @@ public class Transaction {
     @Column
     private int trMethod;
     @Column
-    private Long trAmount;
+    private Double trAmount;
     @Column
     @CreationTimestamp
     private Date trDate;

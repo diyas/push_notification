@@ -1,0 +1,39 @@
+package com.push.app.utility;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.push.app.model.payload.Response;
+import com.push.app.utility.Utility;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+public class AuthExceptionEntryPoint implements AuthenticationEntryPoint {
+
+
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response,
+                         AuthenticationException authException)
+            throws ServletException {
+
+        Map map = Utility.toMap(authException.getCause().toString());
+        Response resp = new Response();
+        resp.setCode(HttpServletResponse.SC_UNAUTHORIZED);
+        resp.setStatus(HttpStatus.UNAUTHORIZED.getReasonPhrase());
+        resp.setMessage(map.get("error").toString());
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(response.getOutputStream(), resp);
+        } catch (Exception e) {
+            throw new ServletException();
+        }
+    }
+}

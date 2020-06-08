@@ -9,5 +9,5 @@ public class RequestPayment {
     private String posId;
     private String trNo;
     private int trMethod;
-    private Long trAmount;
+    private Double trAmount;
 }

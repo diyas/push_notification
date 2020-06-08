@@ -12,13 +12,13 @@ public class MessageParam implements Serializable {
     @SerializedName(value = "payment_method")
     private String paymentMethod;
     @SerializedName(value = "base_amount")
-    private long baseAmount;
-    @SerializedName(value = "qr_pay_app_name")
-    private String qrAppName;
+    private Double baseAmount;
+    @SerializedName(value = "pos_cloud_pointer")
+    private String cloudPointer;
 
-    public MessageParam(String paymentMethod, long baseAmount, String qrAppName) {
+    public MessageParam(String paymentMethod, Double baseAmount, String cloudPointer) {
         this.paymentMethod = paymentMethod;
         this.baseAmount = baseAmount;
-        this.qrAppName = qrAppName;
+        this.cloudPointer = cloudPointer;
     }
 }

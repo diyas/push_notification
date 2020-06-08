@@ -48,7 +48,7 @@ public class PaymentStatusCtl {
         if (mqttService.isConnected())
             trResult = trRepo.save(tr);
         if (trResult != null)
-            mqttService.publish(tr.getTrTopicPos(), Utility.objectToString(new MessageParam(method.getMethodName().toLowerCase(), tr.getTrAmount(), method.getQrName())));
+            mqttService.publish(tr.getTrTopicPos(), Utility.objectToString(new MessageParam(method.getPaymentName().toLowerCase(), tr.getTrAmount(), tr.getTrNo())));
         else
             return Utility.setResponse("payment failed published", null);
         mqttService.disconnect();
@@ -71,12 +71,11 @@ public class PaymentStatusCtl {
         return Utility.setResponse("payment has been success", tr);
     }
 
-    @GetMapping(value = "/v1/payment/get_status/{trNo}")
-    @ApiIgnore
+    @GetMapping(value = "/v1/payment/status/{trNo}")
     public ResponseEntity<String> getStatusPayment(@PathVariable String trNo) {
-        Transaction tr = trRepo.findByTrNoAndTrStatus(trNo, TrStatus.COMPLETED);
+        Transaction tr = trRepo.findByTrNo(trNo);
         if (tr == null)
             return Utility.setResponse(TrStatus.INVALID.toString(), null);
-        return Utility.setResponse(TrStatus.COMPLETED.toString(), tr);
+        return Utility.setResponse(tr.getTrStatus().toString(), tr);
     }
 }
