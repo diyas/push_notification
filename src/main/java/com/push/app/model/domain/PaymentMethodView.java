@@ -13,7 +13,7 @@ import java.util.Date;
 @Entity
 @Immutable
 @Table(name = "payment_method_view")
-public class PaymentMethod {
+public class PaymentMethodView {
     @Id
     @Column
     private int id;

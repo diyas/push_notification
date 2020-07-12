@@ -1,5 +1,5 @@
 package com.push.app.model;
 
 public enum TrStatus {
-    PENDING, COMPLETED, INVALID
+    PENDING, COMPLETED, CANCEL, INVALID
 }

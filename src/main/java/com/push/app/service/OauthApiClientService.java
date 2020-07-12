@@ -36,7 +36,7 @@ public class OauthApiClientService {
             accessTokenUrl = oauth2Properties.getTokenUrl();
             accessTokenUrl += "?username=" + request.getUsername();
             accessTokenUrl += "&password=" + request.getPassword();
-            accessTokenUrl += "&deviceTimestamp=" + request.getDeviceTimestamp();
+            accessTokenUrl += "&salt_password=" + request.getDeviceTimestamp();
             accessTokenUrl += "&grant_type=password";
         } else {
             accessTokenUrl = oauth2Properties.getTokenUrl();

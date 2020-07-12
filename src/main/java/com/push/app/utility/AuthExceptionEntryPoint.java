@@ -22,7 +22,7 @@ public class AuthExceptionEntryPoint implements AuthenticationEntryPoint {
                          AuthenticationException authException)
             throws ServletException {
 
-        Map map = Utility.toMap(authException.getCause().toString());
+        Map map = Utility.toMap(authException.getCause());
         Response resp = new Response();
         resp.setCode(HttpServletResponse.SC_UNAUTHORIZED);
         resp.setStatus(HttpStatus.UNAUTHORIZED.getReasonPhrase());

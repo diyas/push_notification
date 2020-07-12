@@ -6,7 +6,9 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class RefreshToken implements Serializable {
+public class TokenPayload implements Serializable {
     @JsonProperty(value = "refresh_token")
     private String refreshToken;
+    @JsonProperty(value = "revoke_token")
+    private String revokeToken;
 }

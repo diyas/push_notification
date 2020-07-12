@@ -40,4 +40,6 @@ public class Transaction {
     @Column
     @Enumerated(value = EnumType.STRING)
     private TrStatus trStatus;
+    @Column
+    private String userId;
 }

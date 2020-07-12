@@ -79,14 +79,19 @@ public class Utility {
         return returnValue;
     }
 
-    public static Map toMap(String map) {
+    public static Map toMap(Throwable map) {
         Map<String, String> newMap = new HashMap<>();
-        String[] aArr = map.split(",");
-        for (String strA : aArr) {
-            String[] bArr = strA.split("=");
-            for (String strB : bArr) {
-                newMap.put(bArr[0], strB.trim());
+        if (map != null) {
+            String[] aArr = (map.toString()).split(",");
+            for (String strA : aArr) {
+                String[] bArr = strA.split("=");
+                for (String strB : bArr) {
+                    newMap.put(bArr[0], strB.trim());
+                }
             }
+        } else {
+            newMap.put("error", "");
+            newMap.put("error_description", "");
         }
         return newMap;
     }
