@@ -1,13 +1,12 @@
 package com.push.app.model.payload;
 
+import com.push.app.model.PaymentMethodEnum;
 import lombok.Data;
-
-import javax.persistence.Column;
 
 @Data
 public class RequestPayment {
     private String posId;
     private String trNo;
-    private int trMethod;
+    private PaymentMethodEnum trMethod;
     private Double trAmount;
 }

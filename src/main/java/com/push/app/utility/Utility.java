@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.push.app.config.oauth.Oauth2ResponseError;
+import com.push.app.model.PaymentMethodEnum;
 import com.push.app.model.payload.Response;
 import org.springframework.http.*;
 import org.springframework.security.core.*;
@@ -36,6 +37,13 @@ public class Utility {
         Authentication authentication = SecurityContextHolder.getContext()
                 .getAuthentication();
         return authentication.getName();
+    }
+
+    public static PaymentMethodEnum getById(Long id) {
+        for(PaymentMethodEnum e : PaymentMethodEnum.values()) {
+            if(e.code == id) return e;
+        }
+        return PaymentMethodEnum.UNKNOWN;
     }
 
     public static ResponseEntity setResponse(HttpStatus httpStatus, String message, Object data) {
@@ -79,14 +87,19 @@ public class Utility {
         return returnValue;
     }
 
-    public static Map toMap(String map) {
+    public static Map toMap(Throwable map) {
         Map<String, String> newMap = new HashMap<>();
-        String[] aArr = map.split(",");
-        for (String strA : aArr) {
-            String[] bArr = strA.split("=");
-            for (String strB : bArr) {
-                newMap.put(bArr[0], strB.trim());
+        if (map != null) {
+            String[] aArr = (map.toString()).split(",");
+            for (String strA : aArr) {
+                String[] bArr = strA.split("=");
+                for (String strB : bArr) {
+                    newMap.put(bArr[0], strB.trim());
+                }
             }
+        } else {
+            newMap.put("error", "");
+            newMap.put("error_description", "");
         }
         return newMap;
     }

@@ -1,6 +1,6 @@
 package com.push.app.model.domain;
 
-import com.push.app.model.TrStatus;
+import com.push.app.model.TrStatusEnum;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -38,5 +38,5 @@ public class TransactionHistory {
     private String trTopicEdc;
     @Column
     @Enumerated(value = EnumType.STRING)
-    private TrStatus trStatus;
+    private TrStatusEnum trStatusEnum;
 }

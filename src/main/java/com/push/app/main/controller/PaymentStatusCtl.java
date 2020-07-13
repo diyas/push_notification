@@ -1,8 +1,7 @@
 package com.push.app.main.controller;
 
-import com.push.app.config.MqttConfig;
-import com.push.app.model.TrStatus;
-import com.push.app.model.domain.PaymentMethod;
+import com.push.app.model.TrStatusEnum;
+import com.push.app.model.domain.PaymentMethodView;
 import com.push.app.model.domain.Transaction;
 import com.push.app.model.payload.MessageParam;
 import com.push.app.model.payload.RequestPaymentStatus;
@@ -15,13 +14,12 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
 public class PaymentStatusCtl {
+
+    private String pointerCode = "CLD";
 
     @Autowired
     private MqttService mqttService;
@@ -33,22 +31,25 @@ public class PaymentStatusCtl {
     private PaymentMethodRepo payRepo;
 
     @PostMapping(value = "/v1/payment/publish")
-    @ResponseBody
     public ResponseEntity<String> publishPayment(@RequestBody RequestPayment request) throws MqttException {
-        PaymentMethod method = payRepo.findById(request.getTrMethod());
+        PaymentMethodView method = payRepo.findById(request.getTrMethod().code - 1);
         mqttService.connect();
         Transaction tr = new Transaction();
-        tr.setTrNo(UUID.randomUUID().toString());
+        tr.setTrNo(pointerCode+"-"+Utility.getUser()+"-"+System.currentTimeMillis());
+        tr.setUserId(Utility.getUser());
         tr.setTrAmount(request.getTrAmount());
-        tr.setTrMethod(request.getTrMethod());
+        tr.setTrMethod(request.getTrMethod().code - 1);
         tr.setTrTopicEdc("payment/pos/status/" + method.getId() + "/" + Utility.getUser());
         tr.setTrTopicPos("payment/pos/" + Utility.getUser());
-        tr.setTrStatus(TrStatus.PENDING);
+        tr.setTrStatus(TrStatusEnum.PENDING);
         Transaction trResult = null;
         if (mqttService.isConnected())
             trResult = trRepo.save(tr);
-        if (trResult != null)
-            mqttService.publish(tr.getTrTopicPos(), Utility.objectToString(new MessageParam(method.getPaymentName().toLowerCase(), tr.getTrAmount(), tr.getTrNo())));
+        if (trResult != null) {
+            String msg = Utility.objectToString(new MessageParam(method.getPaymentName().toLowerCase(), tr.getTrAmount(), tr.getTrNo()));
+            mqttService.publish(tr.getTrTopicPos(), msg);
+            System.out.println(msg);
+        }
         else
             return Utility.setResponse("payment failed published", null);
         mqttService.disconnect();
@@ -56,12 +57,11 @@ public class PaymentStatusCtl {
     }
 
     @PutMapping(value = "/v1/payment/publish/status")
-    @ResponseBody
     public ResponseEntity<String> publishPaymentStatus(@RequestBody RequestPaymentStatus request) throws MqttException {
-        Transaction tr = trRepo.findByTrNoAndTrStatus(request.getTrNo(), TrStatus.PENDING);
+        Transaction tr = trRepo.findByTrNoAndTrStatus(request.getTrNo(), TrStatusEnum.PENDING);
         if (tr == null)
             return Utility.setResponse("payment status completed", null);
-        tr.setTrStatus(TrStatus.COMPLETED);
+        tr.setTrStatus(TrStatusEnum.COMPLETED);
         trRepo.save(tr);
         if (tr.getId() != 0) {
             mqttService.connect();
@@ -75,7 +75,7 @@ public class PaymentStatusCtl {
     public ResponseEntity<String> getStatusPayment(@PathVariable String trNo) {
         Transaction tr = trRepo.findByTrNo(trNo);
         if (tr == null)
-            return Utility.setResponse(TrStatus.INVALID.toString(), null);
+            return Utility.setResponse(TrStatusEnum.INVALID.toString(), null);
         return Utility.setResponse(tr.getTrStatus().toString(), tr);
     }
 }
