@@ -50,11 +50,14 @@ public class Utility {
         if (httpStatus.equals(HttpStatus.OK)) {
             return setResponse(message, data);
         }
+        String errorDesc = "";
         Oauth2ResponseError oauth2ResponseError = getClientMessage(message);
+        if (oauth2ResponseError != null)
+            errorDesc = oauth2ResponseError.getErrorDescription();
         Response resp = new Response();
         resp.setCode(httpStatus.value());
         resp.setStatus(httpStatus.getReasonPhrase());
-        resp.setMessage(oauth2ResponseError.getErrorDescription());
+        resp.setMessage(errorDesc);
         resp.setData(data);
         return new ResponseEntity<Response>(resp, httpStatus);
     }

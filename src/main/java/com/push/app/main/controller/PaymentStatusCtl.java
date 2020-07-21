@@ -6,17 +6,24 @@ import com.push.app.model.domain.Transaction;
 import com.push.app.model.payload.MessageParam;
 import com.push.app.model.payload.RequestPaymentStatus;
 import com.push.app.model.payload.RequestPayment;
+import com.push.app.model.payload.Response;
 import com.push.app.repository.PaymentMethodRepo;
 import com.push.app.repository.TransactionRepo;
 import com.push.app.service.MqttService;
 import com.push.app.utility.Utility;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @RestController
-@RequestMapping("/api")
+@RequestMapping(value = "/api", produces = APPLICATION_JSON_VALUE)
+@Api(value = "/api", tags = "Payment Status")
 public class PaymentStatusCtl {
 
     private String pointerCode = "CLD";
@@ -31,14 +38,18 @@ public class PaymentStatusCtl {
     private PaymentMethodRepo payRepo;
 
     @PostMapping(value = "/v1/payment/publish")
-    public ResponseEntity<String> publishPayment(@RequestBody RequestPayment request) throws MqttException {
-        PaymentMethodView method = payRepo.findById(request.getTrMethod().code - 1);
+    @ApiOperation(
+            value = "Publish Payment", notes = "Subscribe Broker : payment/pos/{userid}",
+            response = Response.class)
+    public ResponseEntity<String> publishPayment(@ApiParam(value = "Request Body Parameter", required = true)
+                                                     @RequestBody RequestPayment request) throws MqttException {
+        PaymentMethodView method = payRepo.findById(request.getTrMethod());
         mqttService.connect();
         Transaction tr = new Transaction();
         tr.setTrNo(pointerCode+"-"+Utility.getUser()+"-"+System.currentTimeMillis());
         tr.setUserId(Utility.getUser());
         tr.setTrAmount(request.getTrAmount());
-        tr.setTrMethod(request.getTrMethod().code - 1);
+        tr.setTrMethod(request.getTrMethod());
         tr.setTrTopicEdc("payment/pos/status/" + method.getId() + "/" + Utility.getUser());
         tr.setTrTopicPos("payment/pos/" + Utility.getUser());
         tr.setTrStatus(TrStatusEnum.PENDING);
@@ -46,7 +57,7 @@ public class PaymentStatusCtl {
         if (mqttService.isConnected())
             trResult = trRepo.save(tr);
         if (trResult != null) {
-            String msg = Utility.objectToString(new MessageParam(method.getPaymentName().toLowerCase(), tr.getTrAmount(), tr.getTrNo()));
+            String msg = Utility.objectToString(new MessageParam(method.getPaymentName(), tr.getTrAmount(), tr.getTrNo()));
             mqttService.publish(tr.getTrTopicPos(), msg);
             System.out.println(msg);
         }
@@ -57,7 +68,11 @@ public class PaymentStatusCtl {
     }
 
     @PutMapping(value = "/v1/payment/publish/status")
-    public ResponseEntity<String> publishPaymentStatus(@RequestBody RequestPaymentStatus request) throws MqttException {
+    @ApiOperation(
+            value = "Publish Payment by TrId", notes = "",
+            response = Response.class)
+    public ResponseEntity<String> publishPaymentStatus(@ApiParam(value = "Request Body Parameter", required = true)
+                                                           @RequestBody RequestPaymentStatus request) throws MqttException {
         Transaction tr = trRepo.findByTrNoAndTrStatus(request.getTrNo(), TrStatusEnum.PENDING);
         if (tr == null)
             return Utility.setResponse("payment status completed", null);
@@ -72,6 +87,7 @@ public class PaymentStatusCtl {
     }
 
     @GetMapping(value = "/v1/payment/status/{trNo}")
+    @ApiOperation(value = "Check Payment Status", notes = "Check Payment Status", response = Response.class)
     public ResponseEntity<String> getStatusPayment(@PathVariable String trNo) {
         Transaction tr = trRepo.findByTrNo(trNo);
         if (tr == null)
