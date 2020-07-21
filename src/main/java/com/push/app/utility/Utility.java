@@ -8,6 +8,7 @@ import com.push.app.model.payload.Response;
 import org.springframework.http.*;
 import org.springframework.security.core.*;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
@@ -42,11 +43,14 @@ public class Utility {
         if (httpStatus.equals(HttpStatus.OK)) {
             return setResponse(message, data);
         }
+        String errorDesc = "";
         Oauth2ResponseError oauth2ResponseError = getClientMessage(message);
+        if (oauth2ResponseError != null)
+            errorDesc = oauth2ResponseError.getErrorDescription();
         Response resp = new Response();
         resp.setCode(httpStatus.value());
         resp.setStatus(httpStatus.getReasonPhrase());
-        resp.setMessage(oauth2ResponseError.getErrorDescription());
+        resp.setMessage(errorDesc);
         resp.setData(data);
         return new ResponseEntity<Response>(resp, httpStatus);
     }

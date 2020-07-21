@@ -17,8 +17,8 @@ oauth2:
   tokenUrl: http://localhost:8080/oauth2/oauth/token
   checkTokenUrl: http://localhost:8080/oauth2/oauth/check_token
   authorizeTokenUrl: http://localhost:8080/oauth2/oauth/authorize
-  clientId: tester
-  clientSecret: tester
+  clientId: yubitech
+  clientSecret: yubitech
 mqtt:
   automaticReconnect: true
   cleanSession: false

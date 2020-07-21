@@ -4,10 +4,12 @@ import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.io.Serializable;
 
 @Data
+@ApiIgnore
 public class MessageParam implements Serializable {
     @SerializedName(value = "payment_method")
     private String paymentMethod;

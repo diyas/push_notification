@@ -1,10 +1,12 @@
 package com.push.app.model.payload;
 
 import lombok.Data;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Map;
 
 @Data
+@ApiIgnore
 public class ErrorJson {
 
     private Integer code;

@@ -23,13 +23,13 @@ public class OauthApiClientService {
     @Autowired
     private Oauth2Properties oauth2Properties;
 
-    public ResponseEntity<Response> getToken(Login request, String token, boolean isRefresh) {
-        String credentials = oauth2Properties.getCredentials();
-        String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
+    public ResponseEntity<Response> getToken(String basic, Login request, String token, boolean isRefresh) {
+//        String credentials = oauth2Properties.getCredentials();
+//        String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.setBasicAuth(encodedCredentials);
+        headers.setBasicAuth(basic);
         HttpEntity<String> req = new HttpEntity<String>(headers);
         String accessTokenUrl = "";
         if (!isRefresh) {

@@ -38,23 +38,25 @@ public class SwaggerConfig {
 //                .apis(RequestHandlerSelectors.basePackage("com.push.app.main.controller"))
 //                .paths(PathSelectors.any())
 //                .build();
-//        List<ResponseMessage> list = new java.util.ArrayList<>();
-//        list.add(new ResponseMessageBuilder().code(500).message("500 message")
-//                .responseModel(new ModelRef("Result")).build());
-//        list.add(new ResponseMessageBuilder().code(401).message("Unauthorized")
-//                .responseModel(new ModelRef("Result")).build());
-//        list.add(new ResponseMessageBuilder().code(406).message("Not Acceptable")
-//                .responseModel(new ModelRef("Result")).build());
+        List<ResponseMessage> list = new java.util.ArrayList<>();
+        list.add(new ResponseMessageBuilder().code(500).message("500 message")
+                .responseModel(new ModelRef("Response")).build());
+        list.add(new ResponseMessageBuilder().code(401).message("Unauthorized")
+                .responseModel(new ModelRef("Response")).build());
+        list.add(new ResponseMessageBuilder().code(406).message("Not Acceptable")
+                .responseModel(new ModelRef("Response")).build());
 
         return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.basePackage("com.push.app.main.controller"))
                 .paths(PathSelectors.any()).build()
                 .securitySchemes(Collections.singletonList(securityScheme()))
                 .securityContexts(Collections.singletonList(securityContext()))
                 .pathMapping("/")
-//                .useDefaultResponseMessages(false)
-                .apiInfo(apiInfo());
-//                .globalResponseMessage(RequestMethod.GET, list)
-//                .globalResponseMessage(RequestMethod.POST, list);
+                //.useDefaultResponseMessages(false)
+                .apiInfo(apiInfo())
+                .globalResponseMessage(RequestMethod.GET, list)
+                .globalResponseMessage(RequestMethod.POST, list)
+                .globalResponseMessage(RequestMethod.PUT, list)
+                .globalResponseMessage(RequestMethod.DELETE, list);
     }
 
     private OAuth securityScheme() {

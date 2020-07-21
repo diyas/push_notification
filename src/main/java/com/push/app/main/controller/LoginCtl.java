@@ -40,7 +40,7 @@ public class LoginCtl {
     private MqttService mqttService;
 
     @PostMapping("/login")
-    public ResponseEntity<Response> getToken(@RequestBody Login request) {
+    public ResponseEntity<Response> getToken(@RequestHeader HttpHeaders headers, @RequestBody Login request) {
 //        String credentials = oauth2Properties.getCredentials();
 //        String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
 //        RestTemplate restTemplate = new RestTemplate();
@@ -62,11 +62,15 @@ public class LoginCtl {
 //            return Utility.setResponse("", Utility.getClientMessage(e.getMessage()));
 //        }
 //        return Utility.setResponse("", response.getBody());
-        return oauthApiClientService.getToken(request, null, false);
+        List<String> auth = headers.get("Authorization");
+        String basic = "null";
+        if (auth != null)
+            basic = auth.get(0);
+        return oauthApiClientService.getToken(basic, request, null, false);
     }
 
     @PostMapping("/refresh_token")
-    public ResponseEntity<Response> getToken(@RequestBody TokenPayload request) {
+    public ResponseEntity<Response> getToken(@RequestHeader("Authorization") String basic, @RequestBody TokenPayload request) {
 //        String credentials = oauth2Properties.getCredentials();
 //        String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
 //        RestTemplate restTemplate = new RestTemplate();
@@ -86,7 +90,7 @@ public class LoginCtl {
 //            return Utility.setResponse("", e.getMessage());
 //        }
 //        return Utility.setResponse("", response.getBody());
-        return oauthApiClientService.getToken(null, request.getRefreshToken(), true);
+        return oauthApiClientService.getToken(basic,null, request.getRefreshToken(), true);
     }
 
     @PostMapping(value = "/publish_token")

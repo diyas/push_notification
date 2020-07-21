@@ -1,5 +1,6 @@
 package com.push.app.model.domain;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.hibernate.annotations.Immutable;
 
@@ -13,6 +14,7 @@ import java.util.Date;
 @Entity
 @Immutable
 @Table(name = "payment_method_view")
+@ApiModel
 public class PaymentMethodView {
     @Id
     @Column
