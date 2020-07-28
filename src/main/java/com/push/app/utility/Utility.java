@@ -39,13 +39,6 @@ public class Utility {
         return authentication.getName();
     }
 
-    public static PaymentMethodEnum getById(Long id) {
-        for(PaymentMethodEnum e : PaymentMethodEnum.values()) {
-            if(e.code == id) return e;
-        }
-        return PaymentMethodEnum.UNKNOWN;
-    }
-
     public static ResponseEntity setResponse(HttpStatus httpStatus, String message, Object data) {
         if (httpStatus.equals(HttpStatus.OK)) {
             return setResponse(message, data);

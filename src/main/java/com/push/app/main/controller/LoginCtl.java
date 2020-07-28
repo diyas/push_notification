@@ -19,8 +19,10 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Arrays;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @RestController
-@RequestMapping("/auth")
+@RequestMapping(value = "/auth", produces = APPLICATION_JSON_VALUE)
 public class LoginCtl {
 
     @Autowired
@@ -35,7 +37,7 @@ public class LoginCtl {
     }
 
     @PostMapping("/refresh_token")
-    public ResponseEntity<Response> getToken(@RequestBody TokenPayload request) {
+    public ResponseEntity<Response> getRefreshToken(@RequestBody TokenPayload request) {
         return oauthApiClientService.getToken(null, request.getRefreshToken(), true);
     }
 

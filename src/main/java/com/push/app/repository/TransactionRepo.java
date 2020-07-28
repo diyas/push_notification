@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface TransactionRepo extends JpaRepository<Transaction, Long> {
     List<Transaction> findAllByTrNo(String trNo);
-    List<Transaction> findByUserIdAndTrStatus(String userId, TrStatusEnum trStatusEnum);
+    Transaction findByTrNoPosAndTrStatus(String trNoPos, TrStatusEnum trStatus);
+    List<Transaction> findByUserIdAndTrStatus(String userId, TrStatusEnum trStatus);
     Transaction findByTrNo(String trNo);
 
     Transaction findByTrNoAndTrStatus(String trNo, TrStatusEnum trStatusEnum);

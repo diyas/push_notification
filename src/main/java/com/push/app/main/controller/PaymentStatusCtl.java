@@ -1,5 +1,6 @@
 package com.push.app.main.controller;
 
+import com.push.app.main.listener.PaymentCloudListener;
 import com.push.app.model.TrStatusEnum;
 import com.push.app.model.domain.PaymentMethodView;
 import com.push.app.model.domain.Transaction;
@@ -37,34 +38,16 @@ public class PaymentStatusCtl {
     @Autowired
     private PaymentMethodRepo payRepo;
 
+    @Autowired
+    private PaymentCloudListener listener;
+
     @PostMapping(value = "/v1/payment/publish")
     @ApiOperation(
             value = "Publish Payment", notes = "Subscribe Broker : payment/pos/{userid}",
             response = Response.class)
     public ResponseEntity<String> publishPayment(@ApiParam(value = "Request Body Parameter", required = true)
-                                                     @RequestBody RequestPayment request) throws MqttException {
-        PaymentMethodView method = payRepo.findById(request.getTrMethod());
-        mqttService.connect();
-        Transaction tr = new Transaction();
-        tr.setTrNo(pointerCode+"-"+Utility.getUser()+"-"+System.currentTimeMillis());
-        tr.setUserId(Utility.getUser());
-        tr.setTrAmount(request.getTrAmount());
-        tr.setTrMethod(request.getTrMethod());
-        tr.setTrTopicEdc("payment/pos/status/" + method.getId() + "/" + Utility.getUser());
-        tr.setTrTopicPos("payment/pos/" + Utility.getUser());
-        tr.setTrStatus(TrStatusEnum.PENDING);
-        Transaction trResult = null;
-        if (mqttService.isConnected())
-            trResult = trRepo.save(tr);
-        if (trResult != null) {
-            String msg = Utility.objectToString(new MessageParam(method.getPaymentName(), tr.getTrAmount(), tr.getTrNo()));
-            mqttService.publish(tr.getTrTopicPos(), msg);
-            System.out.println(msg);
-        }
-        else
-            return Utility.setResponse("payment failed published", null);
-        mqttService.disconnect();
-        return Utility.setResponse("payment has been published", tr);
+                                                     @RequestBody RequestPayment request) throws Exception {
+        return listener.postSale(request);
     }
 
     @PutMapping(value = "/v1/payment/publish/status")

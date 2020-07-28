@@ -1,6 +1,8 @@
 package com.push.app.model.domain;
 
 import com.push.app.model.TrStatusEnum;
+import com.push.app.model.TrTypeEnum;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -38,5 +40,13 @@ public class TransactionHistory {
     private String trTopicEdc;
     @Column
     @Enumerated(value = EnumType.STRING)
-    private TrStatusEnum trStatusEnum;
+    private TrStatusEnum trStatus;
+    @Column
+    private String userId;
+    @Column
+    private String trNoPos;
+    @Column
+    @Enumerated(value = EnumType.STRING)
+    @ApiModelProperty(notes = "Transaction Type")
+    private TrTypeEnum trType;
 }

@@ -4,6 +4,7 @@ import com.push.app.MmPushNotificationApplication;
 import com.push.app.model.data.MqttProperties;
 import com.push.app.service.interfaces.IMqttService;
 import com.push.app.utility.SocketFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Slf4j
 @Service
 public class MqttService implements IMqttService {
 
@@ -43,7 +45,6 @@ public class MqttService implements IMqttService {
         mqttClient = new MqttClient(connection + prop.getHostname() + ":" + prop.getPort(), prop.getClientId(), new MemoryPersistence());
         if (isSsl) {
             SocketFactory.SocketFactoryOptions socketFactoryOptions = new SocketFactory.SocketFactoryOptions();
-            System.out.println("Init  " + mqttClient.getServerURI());
             try {
                 String fileName = "raw/m2mqtt_dev_ca.crt";
                 ClassLoader classLoader = new MmPushNotificationApplication().getClass().getClassLoader();
@@ -51,7 +52,8 @@ public class MqttService implements IMqttService {
                 socketFactoryOptions.withCaInputStream(stream);
                 prop.setSocketFactory(new SocketFactory(socketFactoryOptions));
             } catch (IOException | NoSuchAlgorithmException | KeyStoreException | CertificateException | KeyManagementException | UnrecoverableKeyException e) {
-                System.out.println("Exception  " + mqttClient.getServerURI());
+                log.info("Exception  " + mqttClient.getServerURI());
+                log.error(e.getMessage());
                 e.printStackTrace();
             }
         }

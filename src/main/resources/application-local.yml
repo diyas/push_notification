@@ -4,6 +4,16 @@ spring:
     url: jdbc:mariadb://localhost:2600/midware_3rd_party_pos?autoReconnect=true
     username: root
     password: P@ssw0rd.15!
+  redis:
+    host: localhost
+    port: 32775
+    max-total: 128
+    max-idle: 128
+    min-idle: 16
+    min-evictable-idle-time-millis: 60
+    time-between-eviction-runs-millis: 30
+    block-when-exhausted: true
+    use-pool: true
   jpa:
     hibernate.ddl-auto: update
     generate-ddl: false
@@ -31,3 +41,5 @@ server:
   port: 8081
   servlet:
     context-path: /pushnotification
+logging:
+  config: classpath:logback-local.xml

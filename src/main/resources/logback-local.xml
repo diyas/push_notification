@@ -11,7 +11,7 @@
 
     <appender name="SAVE-TO-FILE"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_PATH}/oauth.log</file>
+        <file>${LOG_PATH}/swipepaycloud.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>${LOG_PATTERN}</Pattern>
         </encoder>
@@ -20,7 +20,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily -->
             <fileNamePattern>
-                ${LOG_PATH}/archived/oauth.%d{yyyy-MM-dd}.log
+                ${LOG_PATH}/archived/swipepaycloud.%d{yyyy-MM-dd}.log
             </fileNamePattern>
             <maxHistory>10</maxHistory>
             <totalSizeCap>500MB</totalSizeCap>

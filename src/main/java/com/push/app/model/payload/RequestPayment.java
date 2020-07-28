@@ -1,11 +1,16 @@
 package com.push.app.model.payload;
 
-import com.push.app.model.PaymentMethodEnum;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
 public class RequestPayment {
+    @ApiModelProperty(notes = "Transaction Number from POS")
+    private String trNoPos;
+    @ApiModelProperty(
+            notes = "SALE, VOID, SETTLEMENT"
+    )
+    private String trType;
     @ApiModelProperty(
             notes = "1 = Credit/Debit, " +
                     "2 = DANA, " +
@@ -18,4 +23,6 @@ public class RequestPayment {
     private int trMethod;
     @ApiModelProperty(notes = "Base Amount")
     private Double trAmount;
+    @ApiModelProperty(notes = "Repeating Publishing")
+    private boolean republish;
 }
